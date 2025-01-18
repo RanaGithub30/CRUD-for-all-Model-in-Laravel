@@ -15,4 +15,12 @@ class Video extends Model
         'name',
         'description'
     ];
+
+    public static function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'required',
+        ];
+    }
 }

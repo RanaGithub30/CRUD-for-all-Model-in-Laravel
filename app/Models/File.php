@@ -15,4 +15,12 @@ class File extends Model
         'model_id',
         'file'
     ];
+
+    public static function rules()
+    {
+        return [
+            'model_id' => 'required',
+            'file' => 'required',
+        ];
+    }
 }

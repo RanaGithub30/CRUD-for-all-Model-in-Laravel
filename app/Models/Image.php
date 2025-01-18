@@ -15,4 +15,12 @@ class Image extends Model
         'video_id',
         'img'
     ];
+
+    public static function rules()
+    {
+        return [
+            'video_id' => 'required',
+            'img' => 'required',
+        ];
+    }
 }
