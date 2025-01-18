@@ -21,4 +21,5 @@ Route::controller(GenericController::class)->prefix('{model}')->group(function (
     Route::post('/', 'store'); 
     Route::post('/{id}', 'update'); 
     Route::delete('/{id}', 'destroy'); 
+    Route::post('/file/upload', 'fileUpload');
 });

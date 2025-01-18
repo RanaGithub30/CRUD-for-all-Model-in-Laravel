@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 class GenericController extends Controller
 {
     //
+    public const fileModel = "file";
+    public const modelPrefix = "App\Models";
 
     public function getModel($modelName){
         $modelClass = 'App\\Models\\' . Str::studly($modelName);
@@ -79,6 +81,36 @@ class GenericController extends Controller
         $item->delete();
 
         return $this->returnResponse([], [], 200);;
+    }
+
+    public function fileUpload($model, Request $request){
+        $modelInstance = $this->getModel($model);
+        $modelName = self::modelPrefix."\\".ucfirst($model);
+        $data = $request->all();
+        
+        // check modelId present or not
+        $checkModelPresent = $this->checkModelId($modelInstance, $data['model_id']);
+        if($checkModelPresent){
+            return $this->returnResponse([], ["msg" => "No Model Data Found"], 404);
+        }
+
+        $data['model'] = $modelName;
+        $fileName = isset($data['file']) ?  $this->fileStore($data['file']) : "";
+        $data['file'] = $fileName;
+        
+        $storeData = $this->store(new Request($data), self::fileModel);
+        return $this->returnResponse($storeData, [], 200);
+    }
+
+    public function fileStore($file){
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads', $fileName, 'public');
+        return $filePath;
+    }
+
+    public function checkModelId($modelInstance, $model_id){
+           $check = $modelInstance->whereId($model_id)->first();
+           return !$check;
     }
 
     public function returnResponse($data, $meta = [], $status = ""){
